@@ -1,4 +1,6 @@
+from statistics import stdev, mean
 from flask import jsonify, request
+from haversine import haversine, Unit
 
 from database import create_session
 from models import Restaurant
@@ -83,3 +85,28 @@ def create_restaurant():
             return jsonify({"error": str(e)})
         
         return jsonify({"id": r.id})
+    
+def get_statistics_in_radius(limit = DEFAULT_QUERY_LIMIT):
+    ratings : list[int] = []
+    
+    center_lng = 0.0
+    center_lat = 0.0
+    radius_meters = 0.0
+    try:
+        center_lng = float(request.args.get("longitude", "0"))
+        center_lat = float(request.args.get("latitude", "0"))
+        radius_meters = float(request.args.get("radius", "0"))
+    except ValueError:
+        return jsonify({"error": "invalid numeric value"})
+    
+    with create_session() as session:
+        query_results = session.query(Restaurant).limit(limit).all()
+        for restaurant in query_results:
+            distance_from_center_m = haversine((center_lat, center_lng), (restaurant.lat, restaurant.lng), Unit.METERS)
+            if distance_from_center_m <= radius_meters:
+                ratings.append(restaurant.rating)
+    
+    if len(ratings) == 0:
+        return jsonify({"error": "no matches found"}), 404
+    
+    return jsonify({"count": len(ratings), "avg": mean(ratings), "std": stdev(ratings)})
