@@ -1,6 +1,9 @@
+from dataclasses import dataclass
+
 from database import Base
 from sqlalchemy.orm import Mapped, mapped_column
 
+@dataclass
 class Restaurant(Base):
     __tablename__ = "restaurant"
     

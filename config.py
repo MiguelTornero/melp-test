@@ -1,3 +1,5 @@
 from os import environ
 
 SQLALCHEMY_DATABASE_URI = environ["SQLALCHEMY_DATABASE_URI"]
+
+DEFAULT_QUERY_LIMIT = 10
