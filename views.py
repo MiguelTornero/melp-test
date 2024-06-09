@@ -79,7 +79,6 @@ def create_restaurant():
         sesssion.add(r)
         try:
             sesssion.commit()
-            sesssion.refresh(r)
         except Exception as e:
             return jsonify({"error": str(e)})
         
