@@ -27,7 +27,7 @@ def update_restaurant_by_id(id: str):
         try: 
             session.commit()
         except Exception as e:
-            return jsonify({"error": str(e)})
+            return jsonify({"error": str(e)}), 500
         
         status = 200
         if query_result == 0:
