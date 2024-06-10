@@ -107,6 +107,9 @@ def get_statistics_in_radius(limit = DEFAULT_QUERY_LIMIT):
                 ratings.append(restaurant.rating)
     
     if len(ratings) == 0:
-        return jsonify({"error": "no matches found"}), 404
+        return jsonify({"count": 0, "avg": 0, "std": 0}), 404
+    
+    if len(ratings) == 1:
+        return jsonify({"count": 1, "avg": ratings[0], "std": 0}), 404
     
     return jsonify({"count": len(ratings), "avg": mean(ratings), "std": stdev(ratings)})
