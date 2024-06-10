@@ -82,7 +82,7 @@ def create_restaurant():
         try:
             sesssion.commit()
         except Exception as e:
-            return jsonify({"error": str(e)})
+            return jsonify({"error": str(e)}), 500
         
         return jsonify({"id": r.id})
     
@@ -97,7 +97,7 @@ def get_statistics_in_radius(limit = DEFAULT_QUERY_LIMIT):
         center_lat = float(request.args.get("latitude", "0"))
         radius_meters = float(request.args.get("radius", "0"))
     except ValueError:
-        return jsonify({"error": "invalid numeric value"})
+        return jsonify({"error": "invalid numeric value"}), 400
     
     with create_session() as session:
         query_results = session.query(Restaurant).limit(limit).all()
